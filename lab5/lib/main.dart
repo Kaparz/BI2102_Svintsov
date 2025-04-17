@@ -2,39 +2,43 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Lists Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
-      home: ListsHome(),
+      home: const ListsHome(),
     );
   }
 }
 
 class ListsHome extends StatelessWidget {
+  const ListsHome({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Lists Demo'),
-          bottom: TabBar(
+          title: const Text('Lists Demo'),
+          bottom: const TabBar(
             tabs: [
-              Tab(text: 'Simple List'),
-              Tab(text: 'Infinite List'),
-              Tab(text: 'Math List'),
+              Tab(text: 'Простой список'),
+              Tab(text: 'Бесконечный список'),
+              Tab(text: '2^N список'),
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             SimpleList(),
             InfiniteList(),
@@ -48,13 +52,17 @@ class ListsHome extends StatelessWidget {
 
 // Простой список
 class SimpleList extends StatelessWidget {
+  const SimpleList({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: <Widget>[
-        ListTile(title: Text('Элемент 1')),
-        ListTile(title: Text('Элемент 2')),
-        ListTile(title: Text('Элемент 3')),
+      children: const [
+        Text('0000'),
+        Divider(),
+        Text('0001'),
+        Divider(),
+        Text('0010'),
       ],
     );
   }
@@ -62,12 +70,21 @@ class SimpleList extends StatelessWidget {
 
 // Бесконечный список со строками
 class InfiniteList extends StatelessWidget {
+  const InfiniteList({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: null, // бесконечный список
-      itemBuilder: (context, i) {
-        return ListTile(title: Text('Строка ${i + 1}'));
+      itemCount: null, // Бесконечный список
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
+            ListTile(
+              title: Text('Строка ${index + 1}'),
+            ),
+            const Divider(),
+          ],
+        );
       },
     );
   }
@@ -75,12 +92,22 @@ class InfiniteList extends StatelessWidget {
 
 // Бесконечный список с возведением числа 2 в степень
 class InfiniteMathList extends StatelessWidget {
+  const InfiniteMathList({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: null, // бесконечный список
-      itemBuilder: (context, i) {
-        return ListTile(title: Text('2^${i + 1} = ${pow(2, i + 1)}'));
+      itemCount: null, // Бесконечный список
+      itemBuilder: (context, index) {
+        BigInt value = BigInt.from(2).pow(index + 1); // Вычисление 2^N
+        return Column(
+          children: [
+            ListTile(
+              title: Text('2^${index + 1} = $value'),
+            ),
+            const Divider(),
+          ],
+        );
       },
     );
   }
