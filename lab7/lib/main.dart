@@ -7,7 +7,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  @override // Исправлено: убрано лишнее
+  @override 
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Навигация и передача данных',
@@ -27,17 +27,17 @@ class MyApp extends StatelessWidget {
 class FirstScreen extends StatelessWidget {
   const FirstScreen({Key? key}) : super(key: key);
 
-  @override // Исправлено: убрано лишнее
+  @override 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Первый экран'),
+        title: const Text('Возвращение значения'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text('Нажмите кнопку для перехода на второй экран'),
+            
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
@@ -52,7 +52,7 @@ class FirstScreen extends StatelessWidget {
                   );
                 }
               },
-              child: const Text('Перейти на второй экран'),
+              child: const Text('Перейти к выбору'),
             ),
           ],
         ),
@@ -65,17 +65,17 @@ class FirstScreen extends StatelessWidget {
 class SecondScreen extends StatelessWidget {
   const SecondScreen({Key? key}) : super(key: key);
 
-  @override // Исправлено: убрано лишнее
+  @override 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Второй экран'),
+        title: const Text('Выберите любой вариант'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text('Выберите "Да" или "Нет"'),
+            
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
