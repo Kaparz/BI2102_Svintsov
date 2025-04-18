@@ -7,7 +7,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  @id86240433 (@override)
+  @override // Исправлено: убрано лишнее
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Навигация и передача данных',
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
 class FirstScreen extends StatelessWidget {
   const FirstScreen({Key? key}) : super(key: key);
 
-  @id86240433 (@override)
+  @override // Исправлено: убрано лишнее
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +65,7 @@ class FirstScreen extends StatelessWidget {
 class SecondScreen extends StatelessWidget {
   const SecondScreen({Key? key}) : super(key: key);
 
-  @id86240433 (@override)
+  @override // Исправлено: убрано лишнее
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
