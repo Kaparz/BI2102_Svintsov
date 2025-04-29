@@ -5,9 +5,10 @@ class CoffeeMachineState {
   int balance = 0;
   int cash = 0;
 
-  void addWater() => water += 100;
-  void addMilk() => milk += 100;
-  void addBeans() => beans += 50;
+  void addWaterCustom(int amount) => water += amount;
+  void addMilkCustom(int amount) => milk += amount;
+  void addBeansCustom(int amount) => beans += amount;
+  void addMoney(int amount) => cash += amount;
 
   // Проверяет, достаточно ли ингредиентов для выбранного кофе
   bool hasEnoughIngredients(String coffeeType) {
