@@ -95,18 +95,43 @@ class _CoffeeHomePageState extends State<CoffeeHomePage> {
           ),
           const SizedBox(height: 20),
           Text('Наличка: \$${widget.coffeeMachineState.cash.toStringAsFixed(2)}'),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: 'Введите сумму для пополнения',
-              suffixIcon: Icon(Icons.attach_money),
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onSubmitted: (value) {
-              if (value.isNotEmpty) {
-                _addMoney(int.parse(value));
-              }
-            },
-          ),
+          // В build методе, заменяем старый TextField этим кодом:
+Row(
+  children: [
+    Expanded(
+      child: TextField(
+        decoration: const InputDecoration(
+          labelText: 'Введите сумму для пополнения',
+          suffixIcon: Icon(Icons.attach_money),
+        ),
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        onChanged: (value) {
+          _cashInput = value;
+        },
+        controller: TextEditingController(text: _cashInput),
+      ),
+    ),
+    const SizedBox(width: 8),
+    ElevatedButton(
+      onPressed: () {
+        if (_cashInput.isNotEmpty) {
+          final parsed = double.tryParse(_cashInput);
+          if (parsed != null && parsed > 0) {
+            widget.coffeeMachineState.addMoney(parsed.toInt());
+            setState(() {
+              _cashInput = '';
+            });
+          } else {
+            _showSnackBar('Введите корректную сумму');
+          }
+        } else {
+          _showSnackBar('Введите сумму');
+        }
+      },
+      child: const Icon(Icons.add),
+    ),
+  ],
+),
           const SizedBox(height: 20),
           Text('Вода: ${widget.coffeeMachineState.water} мл'),
           Text('Молоко: ${widget.coffeeMachineState.milk} мл'),
