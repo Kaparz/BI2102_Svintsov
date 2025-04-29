@@ -1,41 +1,64 @@
 import 'package:flutter/material.dart';
-import '../async_methods.dart'; // Импортируем асинхронные методы
+import '../async_methods.dart';
+import '../coffee_machine_state.dart';
 
 class CoffeeHomePage extends StatefulWidget {
-  const CoffeeHomePage({super.key});
+  final CoffeeMachineState coffeeMachineState;
+
+  const CoffeeHomePage({super.key, required this.coffeeMachineState});
 
   @override
   State<CoffeeHomePage> createState() => _CoffeeHomePageState();
 }
 
 class _CoffeeHomePageState extends State<CoffeeHomePage> {
-  String status = 'Готов к приготовлению';
+  String selectedCoffee = '';
+  bool isMakingCoffee = false;
+  String _cashInput = '';
 
-  // Асинхронные методы для приготовления кофе
   Future<void> _makeCoffee() async {
-    setState(() {
-      status = 'Нагреваю воду...';
-    });
-    await heatWater(); // Вызываем асинхронный метод
+    if (selectedCoffee.isEmpty) {
+      _showSnackBar('Выберите кофе!');
+      return;
+    }
+
+    if (!widget.coffeeMachineState.hasEnoughIngredients(selectedCoffee)) {
+      _showSnackBar('Недостаточно ингредиентов!');
+      return;
+    }
 
     setState(() {
-      status = 'Завариваю кофе...';
+      isMakingCoffee = true;
     });
-    await brewCoffee(); // Вызываем асинхронный метод
+
+    await heatWater();
+    await brewCoffee();
+    await frothMilk();
+    await mixCoffeeAndMilk();
+
+    widget.coffeeMachineState.useIngredients(selectedCoffee);
+
+    _showSnackBar('$selectedCoffee готово!');
 
     setState(() {
-      status = 'Взбиваю молоко...';
+      isMakingCoffee = false;
     });
-    await frothMilk(); // Вызываем асинхронный метод
+  }
 
+  void _addMoney(int amount) {
     setState(() {
-      status = 'Смешиваю кофе с молоком...';
+      widget.coffeeMachineState.cash += amount;
     });
-    await mixCoffeeAndMilk(); // Вызываем асинхронный метод
+  }
 
+  void _selectCoffee(String coffee) {
     setState(() {
-      status = 'Кофе готово!';
+      selectedCoffee = coffee;
     });
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -50,17 +73,71 @@ class _CoffeeHomePageState extends State<CoffeeHomePage> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
+          CoffeeSelectionButton(
+            coffeeName: 'Эспрессо',
+            onSelect: () => _selectCoffee('Эспрессо'),
+            isSelected: selectedCoffee == 'Эспрессо',
+          ),
+          CoffeeSelectionButton(
+            coffeeName: 'Капучино',
+            onSelect: () => _selectCoffee('Капучино'),
+            isSelected: selectedCoffee == 'Капучино',
+          ),
+          CoffeeSelectionButton(
+            coffeeName: 'Латте',
+            onSelect: () => _selectCoffee('Латте'),
+            isSelected: selectedCoffee == 'Латте',
+          ),
+          const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: _makeCoffee,
+            onPressed: isMakingCoffee ? null : _makeCoffee,
             child: const Text('Приготовить кофе'),
           ),
           const SizedBox(height: 20),
-          Text(
-            status,
-            style: const TextStyle(fontSize: 18, color: Colors.green),
+          Text('Наличка: \$${widget.coffeeMachineState.cash.toStringAsFixed(2)}'),
+          TextField(
+            decoration: const InputDecoration(
+              labelText: 'Введите сумму для пополнения',
+              suffixIcon: Icon(Icons.attach_money),
+            ),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                _addMoney(int.parse(value));
+              }
+            },
           ),
+          const SizedBox(height: 20),
+          Text('Вода: ${widget.coffeeMachineState.water} мл'),
+          Text('Молоко: ${widget.coffeeMachineState.milk} мл'),
+          Text('Зерна: ${widget.coffeeMachineState.beans} г'),
+          Text('Баланс: ${widget.coffeeMachineState.balance} \$')
         ],
       ),
+    );
+  }
+}
+
+class CoffeeSelectionButton extends StatelessWidget {
+  final String coffeeName;
+  final VoidCallback onSelect;
+  final bool isSelected;
+
+  const CoffeeSelectionButton({
+    super.key,
+    required this.coffeeName,
+    required this.onSelect,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onSelect,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isSelected ? Colors.brown[800] : Colors.brown,
+      ),
+      child: Text(coffeeName),
     );
   }
 }
